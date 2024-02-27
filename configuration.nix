@@ -1,16 +1,20 @@
 { config, lib, pkgs, ... }:
 
+let
+  impermanence = builtins.fetchTarball "https://github.com/nix-community/impermanence/archive/master.tar.gz";
+in
 {
   imports = [ 
     ./hardware-configuration.nix
     ./linode.nix
+    "${impermanence}/nixos.nix"
   ];
 
   fileSystems = {
     "/"        = { fsType = "zfs";  device = "zpool/root";    };
     "/nix"     = { fsType = "zfs";  device = "zpool/nix";     };
     "/home"    = { fsType = "zfs";  device = "zpool/home";    };
-    "/persist" = { fsType = "zfs";  device = "zpool/persist"; };
+    "/persist" = { fsType = "zfs";  device = "zpool/persist"; neededForBoot = true;};
     "/boot"    = { fsType = "ext2"; device = "/dev/disk/by-label/boot"; };
   };
   swapDevices = [ { device = "/dev/disk/by-label/swap"; } ];
@@ -21,6 +25,16 @@
     initrd.postDeviceCommands = lib.mkAfter ''
       zfs rollback -r zpool/root@blank
     '';
+  };
+
+  environment.persistence."/persist" = {
+    hideMounts = true;
+    directories = [
+      "/etc/nixos"
+    ];
+    files = [
+      "/etc/machine-id"
+    ];
   };
 
   services.openssh = {
