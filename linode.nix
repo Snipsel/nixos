@@ -19,6 +19,7 @@
   };
 
   networking = {
+    hostName = "latte";
     hostId = "c0ffee00";
     usePredictableInterfaceNames = false;
     useDHCP = false;

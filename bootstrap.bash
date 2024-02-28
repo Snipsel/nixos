@@ -31,21 +31,19 @@ zpool create -f          \
 zfs create -p -o mountpoint=legacy zpool/root
 zfs create -p -o mountpoint=legacy zpool/nix
 zfs create -p -o mountpoint=legacy zpool/persist
-zfs create -p -o mountpoint=legacy zpool/home
 
 zfs snapshot zpool/root@blank
-mkdir /mnt/{boot,nix,home,persist}
+mkdir /mnt/{boot,nix,persist}
 
 mkfs.ext2 -L boot "$DISK"1
 mount "$DISK"1 /mnt/boot
 
 mount -t zfs {zpool,/mnt}/nix
-mount -t zfs {zpool,/mnt}/home
 mount -t zfs {zpool,/mnt}/persist
 
-mkdir -p /mnt/etc /mnt/persist/etc/nixos
+mkdir -p /mnt{/persist,}/etc
+cp . /mnt/persist/etc/
 ln -s /mnt{/persist,}/etc/nixos
-nixos-generate-config --no-filesystems --root /mnt
 
-cp *.nix /mnt/etc/nixos/
+nixos-generate-config --no-filesystems --root /mnt
 nixos-install --no-root-passwd

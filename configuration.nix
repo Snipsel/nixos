@@ -13,7 +13,6 @@ in
   fileSystems = {
     "/"        = { fsType = "zfs";  device = "zpool/root";    };
     "/nix"     = { fsType = "zfs";  device = "zpool/nix";     };
-    "/home"    = { fsType = "zfs";  device = "zpool/home";    };
     "/persist" = { fsType = "zfs";  device = "zpool/persist"; neededForBoot = true;};
     "/boot"    = { fsType = "ext2"; device = "/dev/disk/by-label/boot"; };
   };
@@ -67,7 +66,6 @@ in
   users.mutableUsers = false;
   users.users.snipsel = {
     isNormalUser = true;
-    home = "/home/snipsel";
     extraGroups = [ "wheel" ];
     openssh.authorizedKeys.keys = [ 
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPAoVyOo3d6mPu9w7T1IR92aXROQZibIQFwraEMD5QAB"
