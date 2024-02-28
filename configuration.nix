@@ -33,8 +33,8 @@ in
     ];
     files = [
       "/etc/machine-id"
-      "/home/snipsel/.ssh/ed25519"
-      "/home/snipsel/.ssh/ed25519.pub"
+      "/home/snipsel/.ssh/id_ed25519"
+      "/home/snipsel/.ssh/id_ed25519.pub"
     ];
   };
 
@@ -60,10 +60,11 @@ in
     ];
   };
 
-  environment.systemPackages = with pkgs; [
-    vim
-    git
-  ];
+  environment.systemPackages = with pkgs; [ git ];
+
+  programs.neovim = {
+    enable = true;
+  };
 
   users.mutableUsers = false;
   users.users.snipsel = {
