@@ -1,7 +1,7 @@
 { config, lib, pkgs, modulesPath, ... }:{
 
   boot = {
-    kernelParams = [ "elevator=none" "console=ttyS0,19200n8" ];
+    kernelParams = [ "console=ttyS0,19200n8" ];
     loader = {
       timeout = 30;
       grub = {

@@ -33,6 +33,8 @@ in
     ];
     files = [
       "/etc/machine-id"
+      "/home/snipsel/.ssh/ed25519"
+      "/home/snipsel/.ssh/ed25519.pub"
     ];
   };
 
