@@ -1,14 +1,6 @@
 { config, lib, pkgs, ... }:
-
-let
-  impermanence = builtins.fetchTarball "https://github.com/nix-community/impermanence/archive/master.tar.gz";
-in
 {
-  imports = [ 
-    ./hardware-configuration.nix
-    ./linode.nix
-    "${impermanence}/nixos.nix"
-  ];
+  nix.settings.experimental-features = ["nix-command" "flakes" ];
 
   fileSystems = {
     "/"        = { fsType = "zfs";  device = "zpool/root";    };
@@ -33,6 +25,7 @@ in
     ];
     files = [
       "/etc/machine-id"
+      "/home/snipsel/.gitconfig"
       "/home/snipsel/.ssh/id_ed25519"
       "/home/snipsel/.ssh/id_ed25519.pub"
     ];
@@ -60,10 +53,9 @@ in
     ];
   };
 
-  environment.systemPackages = with pkgs; [ git ];
-
-  programs.neovim = {
-    enable = true;
+  programs = {
+    git    = { enable = true; };
+    neovim = { enable = true; defaultEditor = true; };
   };
 
   users.mutableUsers = false;
