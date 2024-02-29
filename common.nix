@@ -21,11 +21,13 @@
   environment.persistence."/persist" = {
     hideMounts = true;
     directories = [
+      "/srv"
       "/etc/nixos"
+      "/home/snipsel/.config/git"
     ];
     files = [
       "/etc/machine-id"
-      "/home/snipsel/.gitconfig"
+      "/home/snipsel/.ssh/known_hosts"
       "/home/snipsel/.ssh/id_ed25519"
       "/home/snipsel/.ssh/id_ed25519.pub"
     ];
