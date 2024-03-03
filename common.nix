@@ -1,5 +1,6 @@
 { config, lib, pkgs, ... }:
 {
+  system.stateVersion = "23.11";
   nix.settings.experimental-features = ["nix-command" "flakes" ];
 
   fileSystems = {
@@ -21,9 +22,15 @@
   environment.persistence."/persist" = {
     hideMounts = true;
     directories = [
-      "/srv"
       "/etc/nixos"
-      "/home/snipsel/.config/git"
+      { directory="/home/snipsel/.config/git";  user="snipsel";   group="users"; }
+      { directory="/home/snipsel/.config/fish"; user="snipsel";   group="users"; }
+
+      "/srv/git"
+      "/srv/ts"
+      "/var/lib/tailscale"
+      { directory="/var/lib/acme";              user="acme";      group="acme"; }
+      { directory="/var/lib/headscale";         user="headscale"; group="headscale"; }
     ];
     files = [
       "/etc/machine-id"
@@ -58,7 +65,24 @@
   programs = {
     git    = { enable = true; };
     neovim = { enable = true; defaultEditor = true; };
+    fish   = { enable = true; interactiveShellInit = "set fish_greeting"; };
+    bash   = {
+      interactiveShellInit = ''
+        if [[ $(${pkgs.procps}/bin/ps --no-header --pid=$PPID --format=comm) != "fish" && -z ''${BASH_EXECUTION_STRING} ]]
+        then
+          shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=""
+          exec ${pkgs.fish}/bin/fish $LOGIN_OPTION
+        fi
+      '';
+    };
   };
+
+  environment.systemPackages = with pkgs; [
+    ripgrep
+    fzf
+    eza
+    kitty
+  ];
 
   users.mutableUsers = false;
   users.users.snipsel = {
@@ -74,6 +98,4 @@
     execWheelOnly = true;
     wheelNeedsPassword = false;
   };
-
-  system.stateVersion = "23.11";
 }
